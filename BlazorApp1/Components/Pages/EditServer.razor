@@ -1,0 +1,42 @@
+﻿@page "/servers/{ServerId:int}"
+
+<h3>Edit Server</h3>
+<br />
+<br />
+
+@if (server != null)
+{
+	<p>Server ID: @server.ServerId</p>
+	<p>Server Name: @server.Name</p>
+	<p>
+		Server Status: @if (server.IsOnline)
+		{
+			<span style="color:green">online</span>
+		}
+		else
+		{
+			<span style="color:red">offline</span>
+		}
+	
+	</p>
+	<p>City: @server.City</p>
+	<br />
+	<br />
+	<a href="/servers" class="btn btn-primary">Back</a>
+}
+else
+{
+	<p>Server not found</p>
+}
+
+@code {
+	[Parameter]
+	public int ServerId { get; set; }
+
+	private Server? server;
+
+	protected override void OnParametersSet()
+	{
+		server = ServersRepository.GetServerById(ServerId);
+	}
+}
