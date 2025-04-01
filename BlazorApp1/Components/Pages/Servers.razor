@@ -26,7 +26,7 @@
 		<li>
 			Der Server @server.Name ist <span style="color:@(server.IsOnline ? "green":"red")">@(server.IsOnline ? "online" : "offline")</span>
 			<text>&nbsp</text>
-			<a href=@($"/servers/{server.ServerId}") class="btn btn-link">Edit</a>
+			<a href=@($"/servers/server{server.ServerId}") class="btn btn-link">Edit</a>
 		</li>
 	}
 </ul>
