@@ -1,38 +1,16 @@
 ﻿@page "/servers/server{ServerId:int}"
+@inject NavigationManager Navigation
 
 <h3>Edit Server</h3>
 <br />
 <br />
 
-
 @if (server != null)
 {
-	@* <p>Server ID: @server.ServerId</p>
-	<p>Server Name: @server.Name</p>
-	<p>
-		Server Status: @if (server.IsOnline)
-		{
-			<span style="color:green">online</span>
-		}
-		else
-		{
-			<span style="color:red">offline</span>
-		}
-	
-	</p>
-	<p>City: @server.City</p>
-	<br />
-	<br />*@
+	<EditForm Model="server" FormName="formEditServer" OnSubmit="Submit">
 
-	<EditForm Model="@server">
-		<div class="row mb-3">
-			<div class="col-2">
-				<label class="col-form-label">Server ID</label>
-			</div>
-			<div class="col-6">
-				<InputNumber @bind-Value="server.ServerId" class="form-control"></InputNumber>
-			</div>
-		</div>
+		@* Need this hidden input to bind the server.ServerId property. Alternatively we can implement the logic within the Submit() method directly. *@
+		<InputNumber @bind-Value="server.ServerId" hidden></InputNumber>
 
 		<div class="row mb-3">
 			<div class="col-2">
@@ -60,11 +38,13 @@
 				<InputCheckbox @bind-Value="server.IsOnline" class="form-check-input"></InputCheckbox>
 			</div>
 		</div>
-
+		<br />
+		<br />
+		<button class="btn btn-primary" type="submit">Save</button>
+		<text>&nbsp;</text>
+		<button @onclick="GoBack" class="btn btn-primary">Back</button>
 	</EditForm>
-	<br />
-	<br />
-	<a href="/servers" class="btn btn-primary">Back</a>
+
 }
 else
 {
@@ -75,10 +55,30 @@ else
 	[Parameter]
 	public int ServerId { get; set; }
 
-	private Server? server;
+	[SupplyParameterFromForm(FormName = "formEditServer")] // FormName only necessary if there are multiple forms on the page
+	private Server? server { get; set; }
 
 	protected override void OnParametersSet()
 	{
-		server = ServersRepository.GetServerById(ServerId);
+		server ??= ServersRepository.GetServerById(this.ServerId);
+	}
+
+	private async Task Submit()
+	{
+		if (server != null)
+		{
+			ServersRepository.UpdateServer(server.ServerId, server);
+		}
+
+		// Ensure validation completes
+		if (await Task.FromResult(true))
+		{
+			GoBack();
+		}
+	}
+
+	private void GoBack()
+	{
+		Navigation.NavigateTo("/servers");
 	}
 }
