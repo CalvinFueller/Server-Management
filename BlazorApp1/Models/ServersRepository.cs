@@ -2,24 +2,46 @@
 {
     public class ServersRepository
     {
-        private static List<Server> servers = new List<Server>()
+        private static List<Server> servers = CreateNewServerList(25) ?? new List<Server>();
+
+        private static List<Server>? CreateNewServerList(int serverCount)
         {
-            new Server {  ServerId = 1, Name = "Server1", City = "Toronto" },
-            new Server {  ServerId = 2, Name = "Server2", City = "Toronto" },
-            new Server {  ServerId = 3, Name = "Server3", City = "Toronto" },
-            new Server {  ServerId = 4, Name = "Server4", City = "Toronto" },
-            new Server {  ServerId = 5, Name = "Server5", City = "Montreal" },
-            new Server {  ServerId = 6, Name = "Server6", City = "Montreal" },
-            new Server {  ServerId = 7, Name = "Server7", City = "Montreal" },
-            new Server {  ServerId = 8, Name = "Server8", City = "Ottawa" },
-            new Server {  ServerId = 9, Name = "Server9", City = "Ottawa" },
-            new Server {  ServerId = 10, Name = "Server10", City = "Calgary" },
-            new Server {  ServerId = 11, Name = "Server11", City = "Calgary" },
-            new Server {  ServerId = 12, Name = "Server12", City = "Halifax" },
-            new Server {  ServerId = 13, Name = "Server13", City = "Halifax" },
-            new Server {  ServerId = 14, Name = "Server14", City = "Halifax" },
-            new Server {  ServerId = 15, Name = "Server15", City = "Halifax" },
-        };
+            var servers = new List<Server>();
+            Random randomNumber = new Random();
+            int isOnlineNumber, cityNumber;
+            List<string> cities = CitiesRepository.GetCities();
+
+            if (cities != null)
+            {
+                for (int i = 1; i <= serverCount; i++)
+                {
+                    isOnlineNumber = randomNumber.Next(0, 2);
+                    cityNumber = randomNumber.Next(0, cities.Count);
+
+                    servers.Add(new Server() { ServerId = i, Name = $"Server{i}", City = cities[cityNumber], IsOnline = isOnlineNumber == 0 ? false : true });
+                }
+                return servers;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Generate a new ID for a new server
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static int NewID()
+        {
+            if (servers == null || servers.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot generate a new ID. The server list is null or empty.");
+            }
+
+            return servers.Max(s => s.ServerId) + 1;
+        }
 
         public static void AddServer(Server server)
         {

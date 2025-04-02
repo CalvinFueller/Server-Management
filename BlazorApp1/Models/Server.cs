@@ -18,11 +18,24 @@ namespace BlazorApp1.Models
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Initializes a new Server instance.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when unable to generate a new ID.</exception>
         public Server()
         {
-            Random random = new Random();
-            int randomNumber = random.Next(0, 2);
-            IsOnline = randomNumber == 0 ? false : true;
+            try
+            {
+                List<string> cities = CitiesRepository.GetCities();
+
+                this.City = cities != null ? cities[0] : "Toronto";
+                this.IsOnline = false;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"[Server Constructor] Error: {ex.Message}");
+                throw;
+            }
         }
         #endregion
     }

@@ -1,9 +1,10 @@
 ﻿@page "/servers"
+@rendermode InteractiveServer
+
+@inject NavigationManager Navigation
 
 <h3>A list of our Servers</h3>
 <br />
-<br />
-
 <div class="container-fluid text-center">
 	<div class="row w-50">
 		@foreach (var city in cities)
@@ -19,7 +20,10 @@
 		}
 	</div>
 </div>
-
+<br />
+<button @onclick='() => Navigation.NavigateTo("/servers/addserver")' class="btn btn-primary">Add a new Server</button>
+<br />
+<br />
 <ul>
 	@foreach (var server in servers)
 	{
@@ -35,4 +39,5 @@
 {
 	private List<Server> servers = ServersRepository.GetServers();
 	private List<string> cities = CitiesRepository.GetCities();
+
 }

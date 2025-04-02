@@ -1,0 +1,102 @@
+﻿@page "/servers/addserver"
+@rendermode InteractiveServer
+
+@inject NavigationManager Navigation
+
+<h3>Add a new Server</h3>
+<br />
+<br />
+@if(newServer != null)
+{
+	<EditForm Model="newServer" FormName="AddNewServerForm" OnValidSubmit="Submit">
+		<DataAnnotationsValidator></DataAnnotationsValidator>
+
+		<div class="row mb-3 align-items-center">
+			<div class="col-2">
+				<label class="col-form-label">Server ID</label>
+			</div>
+			<div class="col-6">
+				<span>@newServer.ServerId</span>
+				<InputNumber @bind-Value="newServer.ServerId" hidden></InputNumber>
+			</div>
+		</div>
+
+		<div class="row mb-3 align-items-center">
+			<div class="col-2">
+				<label class="col-form-label">Name</label>
+			</div>
+			<div class="col-2">
+				<InputText @bind-Value="newServer.Name" class="form-control"></InputText>
+			</div>
+			<div class="col">
+				<ValidationMessage For="() => newServer.Name"></ValidationMessage>
+			</div>
+		</div>
+
+		<div class="row mb-3 align-items-center">
+			<div class="col-2">
+				<label class="col-form-label">City</label>
+			</div>
+			<div class="col-2">
+				<InputSelect class="form-select" @bind-Value="newServer.City">
+					<option value="">--Select a city--</option>
+					@foreach (var city in CitiesRepository.GetCities())
+					{
+						<option value="@city">@city</option>
+					}
+				</InputSelect>
+			</div>
+			<div class="col">
+				<ValidationMessage For="() => newServer.City"></ValidationMessage>
+			</div>
+		</div>
+
+		<div class="row mb-3 align-items-center">
+			<div class="col-2">
+				<label class="col-form-label">Server Status</label>
+			</div>
+			<div class="col-6">
+				<InputCheckbox @bind-Value="newServer.IsOnline" class="form-check-input"></InputCheckbox>
+			</div>
+		</div>
+		<br />
+		<br />
+		<button class="btn btn-primary" type="submit">Add Server</button>
+		<text>&nbsp;</text>
+		<button @onclick='() => Navigation.NavigateTo("/servers")' class="btn btn-primary" type="button">Back</button>
+	</EditForm>
+	
+}
+else
+{
+	<p>@errorMessage</p>
+}
+
+@code 
+{
+	private Server? newServer;
+	private string? errorMessage;
+
+	protected override void OnInitialized()
+	{
+		try
+		{
+			newServer = new Server();
+			newServer.ServerId = ServersRepository.NewID();
+			newServer.Name = $"Server{newServer.ServerId}"; 
+		}
+		catch (InvalidOperationException ex)
+		{
+			errorMessage = ex.Message;
+		}
+	} 
+
+	private void Submit()
+	{
+		if (newServer != null)
+		{
+			ServersRepository.AddServer(newServer);
+			Navigation.NavigateTo("/servers");
+		}
+	}
+}
