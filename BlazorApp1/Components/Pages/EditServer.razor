@@ -1,5 +1,5 @@
 ﻿@page "/servers/server{ServerId:int}"
-@rendermode InteractiveServer
+@* @rendermode InteractiveServer *@
 @inject NavigationManager Navigation
 
 <h3>Edit Server</h3>
@@ -53,7 +53,7 @@
 		<br />
 		<br />
 		<button class="btn btn-primary" type="submit">Save</button>
-		<text>&nbsp;</text>
+		&nbsp;
 		@* <a href="/servers" class="btn btn-primary">Back</a> *@
 		@*Changed back the Back to a link due to issues with the validation process. Invalid entry would cause the button to not execute the GoBack() method.*@
 		<button @onclick="GoBack" class="btn btn-primary">Back</button>
