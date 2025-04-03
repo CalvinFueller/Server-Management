@@ -1,5 +1,5 @@
 ﻿@page "/servers"
-@* @rendermode InteractiveServer *@
+@rendermode InteractiveServer
 
 @inject NavigationManager Navigation
 
@@ -20,6 +20,7 @@
 		}
 	</div>
 </div>
+<br />
 <br />
 <button @onclick='() => Navigation.NavigateTo("/servers/addserver")' class="btn btn-primary">Add a new Server</button>
 <br />
